@@ -2,7 +2,7 @@ import time
 import copy
 
 CANVAS_WIDTH = 800
-CELL_DENSITY = 160
+CELL_DENSITY = 200
 CELL_WIDTH = CANVAS_WIDTH / CELL_DENSITY
 
 cells = [[0 for i in range(CELL_DENSITY)] for j in range(CELL_DENSITY)]
@@ -12,6 +12,16 @@ game_is_stepping = False
 def setup():
     size(CANVAS_WIDTH, CANVAS_WIDTH)
     stroke(0)
+    cells[CELL_DENSITY / 2 - 2][CELL_DENSITY / 2] = 1
+    cells[CELL_DENSITY / 2 - 1][CELL_DENSITY / 2] = 1
+    cells[CELL_DENSITY / 2    ][CELL_DENSITY / 2] = 1
+    cells[CELL_DENSITY / 2 + 1][CELL_DENSITY / 2] = 1
+    cells[CELL_DENSITY / 2 + 2][CELL_DENSITY / 2] = 1
+    
+    cells[CELL_DENSITY / 2][CELL_DENSITY / 2 - 2] = 1
+    cells[CELL_DENSITY / 2][CELL_DENSITY / 2 - 1] = 1
+    cells[CELL_DENSITY / 2][CELL_DENSITY / 2 + 1] = 1
+    cells[CELL_DENSITY / 2][CELL_DENSITY / 2 + 2] = 1
 
 def drawGridLines():
     for i in range(1, CELL_DENSITY):
@@ -46,7 +56,7 @@ def willLive(cell, num_neighbors):
     return 0
 
 def willLiveCool(cell, num_neighbors):
-    if num_neighbors == 3 or num_neighbors == 4 or num_neighbors == 5 or (cell == 1 and num_neighbors == 2):
+    if num_neighbors == 3 or num_neighbors == 4 or num_neighbors == 5 or num_neighbors == 6 or (cell == 1 and num_neighbors == 2):
         return 1
     return 0
 
@@ -54,7 +64,7 @@ def processGame():
     buffer_grid = copy.deepcopy(cells)
     for i in range(0, CELL_DENSITY):
         for j in range(0, CELL_DENSITY):
-            buffer_grid[i][j] = willLive(cells[i][j], calcNeighbors(i, j))
+            buffer_grid[i][j] = willLiveCool(cells[i][j], calcNeighbors(i, j))
 
     return buffer_grid
     
@@ -63,7 +73,7 @@ def draw():
     global game_is_running
     global game_is_stepping
     background(255, 255, 255)
-    drawGridLines()
+    # drawGridLines()
     drawCells()
     if game_is_running or game_is_stepping:
         buffer_grid = copy.deepcopy(processGame())
